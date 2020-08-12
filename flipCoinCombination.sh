@@ -1,23 +1,69 @@
 #!/bin/bash
+printf "\n"
 echo "Coin Flip Combination"
-declare -A dict
-ct=0
-heads=0
-tails=0
-for i in {1..20}
+printf "\n"
+echo "Singlet Percentage"
+function HeadorTail {
+	case $1 in
+	1)
+		echo "H"
+		;;
+	0)
+		echo "T"
+		;;
+	esac
+}
+declare -A dict dict2
+for i in {1..50}
 do
-	check=$(( RANDOM%2 ))
-	if [[ $check -eq 1 ]]
-	then
-		dict[$ct]="Heads"
-		heads=$(( $heads + 1 ))
-	else
-		dict[$ct]="Tails"
-		tails=$(( $tails + 1 ))
-	fi
-	ct=$(( $ct + 1))
+	check=$( HeadorTail $(( RANDOM%2 )) )
+	case $check in
+		"H")
+			dict[$i]=$check
+			(( H++ ))
+			;;
+		"T")
+			dict[$i]=$check
+			(( T++ ))
+			;;
+	esac
 done
-perHead=$(( $heads * 100 ))
-perTail=$(( $tails * 100 ))
-echo "Head Percentage: $(( perHead/20 ))%"
-echo "Tail Percentage: $(( perTail/20 ))%"
+perHead=$(( $H * 100 ))
+perTail=$(( $T * 100 ))
+echo "Head Percentage: $(( perHead/50 ))%"
+echo "Tail Percentage: $(( perTail/50 ))%"
+printf "\n"
+echo "Doublet Percentage"
+for (( i=0; i<50; i++ ))
+do
+	check1=$( HeadorTail $(( RANDOM%2 )) )
+	check2=$( HeadorTail $(( RANDOM%2 )) )
+	doublet=$check1$check2
+    case $doublet in
+    	"HH")
+	        dict2[$i]=$doublet
+			(( HH++ ))
+			;;
+    	"HT")
+        	dict2[$i]=$doublet
+			(( HT++ ))
+			;;
+		"TH")
+			dict2[$i]=$doublet
+			(( TH++ ))
+			;;
+		"TT")
+			dict2[$i]=$doublet
+			(( TT++ ))
+			;;
+	esac
+done
+perHH=$(( $HH * 100 ))
+perHT=$(( $HT * 100 ))
+perTH=$(( $TH * 100 ))
+perTT=$(( $TT * 100 ))
+echo "HH Percentage: $(( $perHH/50 ))%"
+echo "HT Percentage: $(( $perHT/50 ))%"
+echo "TH Percentage: $(( $perTH/50 ))%"
+echo "TT Percentage: $(( $perTT/50 ))%"
+
